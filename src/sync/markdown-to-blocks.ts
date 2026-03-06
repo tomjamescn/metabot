@@ -46,6 +46,26 @@ const LANGUAGE_MAP: Record<string, number> = {
   'less': 72, 'pascal': 73, 'stata': 76, 'toml': 80,
 };
 
+// Feishu API limits text_run content to ~2000 bytes. Split at line boundaries to stay safe.
+const MAX_TEXT_RUN_CHARS = 500;
+
+function splitLongContent(content: string): string[] {
+  if (content.length <= MAX_TEXT_RUN_CHARS) return [content];
+  const chunks: string[] = [];
+  const lines = content.split('\n');
+  let current = '';
+  for (const line of lines) {
+    if (current.length + line.length + 1 > MAX_TEXT_RUN_CHARS && current.length > 0) {
+      chunks.push(current);
+      current = line;
+    } else {
+      current += (current ? '\n' : '') + line;
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks;
+}
+
 interface TextElement {
   text_run?: {
     content: string;
@@ -181,10 +201,11 @@ export function markdownToBlocks(markdown: string): FeishuBlock[] {
       }
       i++; // skip closing ```
       const content = codeLines.join('\n');
+      const chunks = splitLongContent(content);
       blocks.push({
         block_type: BLOCK_TYPE.CODE,
         code: {
-          elements: [{ text_run: { content } }],
+          elements: chunks.map((c) => ({ text_run: { content: c } })),
           language: LANGUAGE_MAP[lang] || 1,
         },
       });
@@ -200,10 +221,11 @@ export function markdownToBlocks(markdown: string): FeishuBlock[] {
         i++;
       }
       const content = tableLines.join('\n');
+      const tableChunks = splitLongContent(content);
       blocks.push({
         block_type: BLOCK_TYPE.CODE,
         code: {
-          elements: [{ text_run: { content } }],
+          elements: tableChunks.map((c) => ({ text_run: { content: c } })),
           language: 1, // plaintext
         },
       });
