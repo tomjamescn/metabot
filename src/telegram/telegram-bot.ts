@@ -1,4 +1,5 @@
 import { Bot } from 'grammy';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { TelegramBotConfig, BotConfigBase } from '../config.js';
 import type { Logger } from '../utils/logger.js';
 import type { IncomingMessage } from '../types.js';
@@ -25,7 +26,15 @@ export async function startTelegramBot(
 
   botLogger.info('Starting Telegram bot...');
 
-  const bot = new Bot(config.telegram.botToken);
+  const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.https_proxy || process.env.http_proxy;
+  if (proxyUrl) {
+    botLogger.info({ proxyUrl }, 'Using HTTPS proxy for Telegram API');
+  }
+  const botOptions = proxyUrl
+    ? { client: { baseFetchConfig: { agent: new HttpsProxyAgent(proxyUrl) } } }
+    : {};
+
+  const bot = new Bot(config.telegram.botToken, botOptions);
   const sender = new TelegramSender(bot, botLogger);
   const bridge = new MessageBridge(config, botLogger, sender, memoryServerUrl, memorySecret);
 
