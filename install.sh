@@ -16,8 +16,8 @@ fi
 # ============================================================================
 # Configuration defaults
 # ============================================================================
-METABOT_HOME="${METABOT_HOME:-$HOME/metabot}"
-METABOT_REPO="${METABOT_REPO:-https://github.com/xvirobotics/metabot.git}"
+METABOT_HOME="${METABOT_HOME:-$HOME/workspace/service/metabot}"
+METABOT_REPO="${METABOT_REPO:-https://github.com/tomjamescn/metabot.git}"
 
 # ============================================================================
 # Colors and formatting
@@ -35,7 +35,7 @@ banner() {
   echo -e "${CYAN}${BOLD}"
   echo "  ╔══════════════════════════════════════════╗"
   echo "  ║            MetaBot Installer             ║"
-  echo "  ║     一生二，二生三，三生万物               ║"
+  echo "  ║        一生二，二生三，三生万物          ║"
   echo "  ╚══════════════════════════════════════════╝"
   echo -e "${NC}"
   echo ""
