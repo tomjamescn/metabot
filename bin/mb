@@ -4,19 +4,15 @@
 
 set -euo pipefail
 
-# --- Config: env vars > .env file > defaults ---
-if [[ -z "${METABOT_URL:-}" ]]; then
-  METABOT_ENV="${METABOT_HOME:-$HOME/metabot}/.env"
-  if [[ -f "$METABOT_ENV" ]]; then
-    _port=$(grep -oP '^API_PORT=\K.*' "$METABOT_ENV" 2>/dev/null || true)
-    _secret=$(grep -oP '^API_SECRET=\K.*' "$METABOT_ENV" 2>/dev/null || true)
-  fi
-  METABOT_URL="http://localhost:${_port:-9100}"
+# --- Config: always read .env, then fall back to env vars / defaults ---
+METABOT_ENV="${METABOT_HOME:-$HOME/metabot}/.env"
+if [[ -f "$METABOT_ENV" ]]; then
+  _port=$(grep -oP '^API_PORT=\K.*' "$METABOT_ENV" 2>/dev/null || true)
+  _secret=$(grep -oP '^API_SECRET=\K.*' "$METABOT_ENV" 2>/dev/null || true)
 fi
-if [[ -z "${METABOT_AUTH:-}" ]]; then
-  _secret="${_secret:-${API_SECRET:-changeme}}"
-  METABOT_AUTH="Authorization: Bearer $_secret"
-fi
+METABOT_URL="${METABOT_URL:-http://localhost:${_port:-9100}}"
+_secret="${_secret:-${API_SECRET:-changeme}}"
+METABOT_AUTH="Authorization: Bearer $_secret"
 
 _json() { python3 -m json.tool 2>/dev/null || cat; }
 
