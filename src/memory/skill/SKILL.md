@@ -6,7 +6,7 @@ description: Read and write shared memory documents. Use this when you need to s
 ## MetaMemory Document Server
 
 A shared memory server stores documents as organized Markdown files in a folder tree.
-Server URL: !`echo ${MEMORY_SERVER_URL:-http://localhost:8100}`
+Server URL: !`echo ${META_MEMORY_URL:-${MEMORY_SERVER_URL:-http://localhost:8100}}`
 
 ### When to Use
 - User asks to "remember", "save", "note down" something

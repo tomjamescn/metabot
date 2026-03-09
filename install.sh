@@ -426,7 +426,7 @@ API_TIMEOUT_MS=600000"
   API_SECRET="$(openssl rand -hex 32 2>/dev/null || head -c 64 /dev/urandom | xxd -p | tr -d '\n' | head -c 64)"
   API_PORT="9100"
   LOG_LEVEL="info"
-  MEMORY_SERVER_URL="http://localhost:8100"
+  META_MEMORY_URL="http://localhost:8100"
 
   # Claude executable path
   CLAUDE_PATH=""
@@ -470,7 +470,7 @@ if [[ "$SKIP_CONFIG" == "false" ]]; then
     fi
     echo ""
     echo "# MetaMemory"
-    echo "MEMORY_SERVER_URL=${MEMORY_SERVER_URL}"
+    echo "META_MEMORY_URL=${META_MEMORY_URL}"
   } > "$METABOT_HOME/.env"
   chmod 600 "$METABOT_HOME/.env"
   success ".env generated"

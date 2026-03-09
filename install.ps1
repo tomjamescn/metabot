@@ -452,7 +452,7 @@ LOG_LEVEL=$LogLevel
     $envContent += @"
 
 # MetaMemory
-MEMORY_SERVER_URL=$MemoryServerUrl
+META_MEMORY_URL=$MemoryServerUrl
 "@
 
     [System.IO.File]::WriteAllText($EnvFile, $envContent, [System.Text.UTF8Encoding]::new($false))

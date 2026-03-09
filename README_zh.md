@@ -171,7 +171,7 @@ npm run dev
 | `WIKI_AUTO_SYNC_DEBOUNCE_MS` | 5000 | 自动同步防抖延迟 |
 | `CLAUDE_EXECUTABLE_PATH` | 自动检测 | `claude` 二进制路径（未设置时通过 `which` 解析） |
 | `METABOT_URL` | `http://localhost:9100` | MetaBot API 地址（CLI 远程访问） |
-| `MEMORY_SERVER_URL` | `http://localhost:8100` | MetaMemory 服务地址（CLI 远程访问） |
+| `META_MEMORY_URL` | `http://localhost:8100` | MetaMemory 服务地址（CLI 远程访问） |
 | `WEBHOOK_URLS` | — | 逗号分隔的 Webhook URL，任务完成后发通知 |
 | `LOG_LEVEL` | info | 日志级别 |
 
@@ -290,7 +290,7 @@ CLI 工具（`mb`、`mm`）支持连接远程 MetaBot/MetaMemory 服务器。在
 ```bash
 # 在 ~/.metabot/.env 或 ~/metabot/.env 中
 METABOT_URL=http://your-server:9100      # mb 命令连接的服务器
-MEMORY_SERVER_URL=http://your-server:8100 # mm 命令连接的服务器
+META_MEMORY_URL=http://your-server:8100 # mm 命令连接的服务器
 API_SECRET=your-secret                    # 共享认证 Token
 ```
 

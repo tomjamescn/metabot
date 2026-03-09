@@ -171,7 +171,7 @@ Prerequisites: Node.js 20+, [Claude Code CLI](https://github.com/anthropics/clau
 | `WIKI_AUTO_SYNC_DEBOUNCE_MS` | 5000 | Debounce delay for auto-sync |
 | `CLAUDE_EXECUTABLE_PATH` | auto-detect | Path to `claude` binary (resolved via `which` if not set) |
 | `METABOT_URL` | `http://localhost:9100` | MetaBot API URL (for CLI remote access) |
-| `MEMORY_SERVER_URL` | `http://localhost:8100` | MetaMemory server URL (for CLI remote access) |
+| `META_MEMORY_URL` | `http://localhost:8100` | MetaMemory server URL (for CLI remote access) |
 | `WEBHOOK_URLS` | — | Comma-separated webhook URLs for task completion notifications |
 | `LOG_LEVEL` | info | Log level |
 
@@ -290,7 +290,7 @@ CLI tools (`mb`, `mm`) can connect to a remote MetaBot/MetaMemory server. Add th
 ```bash
 # In ~/.metabot/.env or ~/metabot/.env
 METABOT_URL=http://your-server:9100      # mb commands target this server
-MEMORY_SERVER_URL=http://your-server:8100 # mm commands target this server
+META_MEMORY_URL=http://your-server:8100 # mm commands target this server
 API_SECRET=your-secret                    # shared auth token
 ```
 
