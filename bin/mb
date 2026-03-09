@@ -119,16 +119,26 @@ print(json.dumps({'botName': sys.argv[1], 'chatId': sys.argv[2], 'cronExpr': sys
   health|h)
     curl -s -H "$METABOT_AUTH" "$METABOT_URL/api/health" | _json
     ;;
-  # --- Update CLI tools ---
+  # --- Update from GitHub ---
   update|up)
     METABOT_SRC="${METABOT_HOME:-$HOME/metabot}"
     LOCAL_BIN="$HOME/.local/bin"
-    if [[ ! -d "$METABOT_SRC/bin" ]]; then
-      echo "Error: MetaBot source not found at $METABOT_SRC/bin"
+    if [[ ! -d "$METABOT_SRC/.git" ]]; then
+      echo "Error: MetaBot repo not found at $METABOT_SRC"
       exit 1
     fi
+
+    echo "==> Pulling latest from GitHub..."
+    git -C "$METABOT_SRC" pull --ff-only || { echo "Error: git pull failed (try resolving conflicts manually)"; exit 1; }
+
+    echo "==> Installing dependencies..."
+    (cd "$METABOT_SRC" && npm install --no-audit --no-fund 2>&1 | tail -1)
+
+    echo "==> Building..."
+    (cd "$METABOT_SRC" && npm run build 2>&1 | tail -1)
+
+    echo "==> Updating CLI tools..."
     mkdir -p "$LOCAL_BIN"
-    updated=0
     for cli in mb mm metabot fd; do
       src="$METABOT_SRC/bin/$cli"
       dst="$LOCAL_BIN/$cli"
@@ -136,16 +146,13 @@ print(json.dumps({'botName': sys.argv[1], 'chatId': sys.argv[2], 'cronExpr': sys
         if ! cmp -s "$src" "$dst" 2>/dev/null; then
           cp "$src" "$dst"
           chmod +x "$dst"
-          echo "  Updated: $cli"
-          updated=$((updated + 1))
+          echo "    Updated: $cli"
         fi
       fi
     done
-    if [[ $updated -eq 0 ]]; then
-      echo "All CLI tools are up to date."
-    else
-      echo "Updated $updated CLI tool(s) in $LOCAL_BIN"
-    fi
+
+    echo "==> Done! Restart the service to apply changes."
+    echo "    pm2 restart metabot  OR  pkill -f 'tsx src/index' && npm run dev"
     ;;
   # --- Help ---
   *)
@@ -172,6 +179,6 @@ print(json.dumps({'botName': sys.argv[1], 'chatId': sys.argv[2], 'cronExpr': sys
     echo ""
     echo "  System:"
     echo "    mb health                        - Health check"
-    echo "    mb update                        - Update CLI tools from source"
+    echo "    mb update                        - Pull latest & rebuild from GitHub"
     ;;
 esac
